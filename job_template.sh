@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J mb_${JOB_NAME}
-#SBATCH -o ${LOG_PATH}/mb_${JOB_NAME}.out
+#SBATCH -J mc_${JOB_NAME}
+#SBATCH -o ${LOG_PATH}/mc_${JOB_NAME}.out
 #SBATCH --cpus-per-task=${CPUS_PER_TASK}
 ${BABEL} ${INPUT_FILE} -o ${OUTPUT_FORMAT} -O ${OUTPUT_FILE} ${BABEL_OPTIONS} && ${DELETE_CMD} ${INPUT_FILE}
