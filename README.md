@@ -1,5 +1,5 @@
 # mol-converter
-molecular file format converter using openbabel, sulrm
+molecular file format converter using openbabel, slurm
 
 ### usage
 ```shell
