@@ -104,13 +104,17 @@ def job_wait(job_ids: List[str]):
               show_default=True, help='babel command.')
 @click.option('--babel_option', nargs=1, default=None, type=str, required=False,
               help='open babel options. ex) --gen3d -p 7.4')
-def app(src: str, output_format: str, dist: str = './dist', babel_cmd: str = 'obabel', babel_option: str = None):
+@click.option('--split', nargs=1, default=True, type=bool, required=False,
+              help='produce multiple output files')
+def app(src: str, output_format: str, dist: str = './dist', babel_cmd: str = 'obabel', babel_option: str = None,
+        split: bool = True):
     logger.info("************ parameter ************")
     logger.info(f'src : {src}')
     logger.info(f'dist : {dist}')
     logger.info(f'output_format : {output_format}')
     logger.info(f'babel_cmd : {babel_cmd}')
     logger.info(f'babel_option : {babel_option}')
+    logger.info(f'split : {split}')
     logger.info("***********************************")
 
     dist_path: str = path.abspath(path.join(work_dir, dist))
@@ -142,14 +146,21 @@ def app(src: str, output_format: str, dist: str = './dist', babel_cmd: str = 'ob
 
     logger.info('molecule split...')
     if path.isfile(src):
-        shell([babel_cmd, src, '-m', '-O', path.join(source_path, os.path.basename(src))])
+        if split:
+            shell([babel_cmd, src, '-m', '-O', path.join(source_path, os.path.basename(src))])
+        else:
+            shutil.copyfile(src, path.join(source_path, os.path.basename(src)))
+            pass
     else:
         src_path = path.abspath(path.join(work_dir, src))
         for f in os.listdir(src_path):
             src_file_path = path.join(src_path, f)
             try:
                 if path.isfile(src_file_path):
-                    shell([babel_cmd, src_file_path, '-m', '-O', path.join(source_path, f)])
+                    if split:
+                        shell([babel_cmd, src_file_path, '-m', '-O', path.join(source_path, f)])
+                    else:
+                        shutil.copyfile(src_file_path, path.join(source_path, f))
             except Exception as e:
                 logging.error(f'babel error : {e}')
                 pass
